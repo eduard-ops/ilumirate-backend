@@ -1,4 +1,4 @@
-const signupUser = require("./signup");
+const signupUser = require("./signupUser");
 
 const checkUser = require("./checkUser");
 
