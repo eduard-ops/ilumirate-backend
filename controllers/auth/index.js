@@ -4,11 +4,11 @@ const signup = require("./signup");
 
 const logout = require("./logout");
 
-const googleAuth = require("./googleAuth");
+const authSuccess = require("./authSuccess");
 
 module.exports = {
   login,
   signup,
-  googleAuth,
+  authSuccess,
   logout,
 };

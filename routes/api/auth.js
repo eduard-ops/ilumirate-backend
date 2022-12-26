@@ -4,6 +4,8 @@ const router = express.Router();
 
 const passport = require("../../lib/passport");
 
+const Config = require("../../lib/config");
+
 const {
   ctrlWrapper,
   validation,
@@ -29,13 +31,13 @@ router.get(
   "/google/callback",
   passport.authenticate("google", {
     failureRedirect: "/error",
-    successRedirect: "/seccess",
-  })
+  }),
+  (req, res) => {
+    res.redirect(Config.redirect.url);
+  }
 );
 
-router.get("/seccess", function (req, res, next) {
-  res.json({ message: "done" });
-});
+router.get("/seccess", ctrlWrapper(auth.authSuccess));
 
 router.get("/error", function (req, res, next) {
   res.json({ message: "👿" });
