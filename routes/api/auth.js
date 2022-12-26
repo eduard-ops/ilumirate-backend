@@ -25,6 +25,18 @@ router.get(
   passport.authenticate("google", { scope: ["profile", "email"] })
 );
 
+router.get(
+  "/google/callback",
+  passport.authenticate("google", {
+    failureRedirect: "/error",
+    successRedirect: "/seccess",
+  })
+);
+
+router.get("/seccess", function (req, res, next) {
+  res.json({ message: "done" });
+});
+
 router.get("/error", function (req, res, next) {
   res.json({ message: "👿" });
 });

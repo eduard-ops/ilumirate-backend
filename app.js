@@ -10,8 +10,6 @@ const cors = require("cors");
 
 const router = require("./routes/api");
 
-const path = require("path");
-
 const Config = require("./lib/config");
 
 const app = express();
@@ -20,32 +18,15 @@ const passport = require("./lib/passport");
 
 const formatsLogger = app.get("env") === "development" ? "dev" : "short";
 
+app.use(session(Config.session));
 app.use(logger(formatsLogger));
 app.use(cors());
 app.use(express.json());
-app.set("views", path.join(__dirname, "views"));
-app.set("view engine", "ejs");
-app.use("/api", router);
-
-app.use(session(Config.session));
 
 app.use(passport.initialize());
 app.use(passport.session());
 
-app.get(
-  "/auth/google/callback",
-  passport.authenticate("google", {
-    successRedirect: "http://localhost:5000/c",
-    failureMessage: "dfsdfsdfsdf",
-  }),
-  (req, res) => {
-    res.redirect("/c");
-  }
-);
-
-app.get("/c", function (req, res, next) {
-  res.json({ message: "done" });
-});
+app.use("/api", router);
 
 // app.use(
 //   session({
