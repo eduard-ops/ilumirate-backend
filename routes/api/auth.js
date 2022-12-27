@@ -6,6 +6,8 @@ const passport = require("../../lib/passport");
 
 const Config = require("../../lib/config");
 
+const { createError } = require("../../helpers");
+
 const {
   ctrlWrapper,
   validation,
@@ -22,22 +24,26 @@ router.post("/login", validation(joiUserSchema), ctrlWrapper(auth.login));
 
 router.get("/logout", authMiddleware, ctrlWrapper(auth.logout));
 
-router.get(
-  "/google",
-  passport.authenticate("google", { scope: ["profile", "email"] })
-);
+router.get("/google", passport.authenticate("google"));
 
 router.get(
   "/google/callback",
   passport.authenticate("google", {
-    failureRedirect: "/error",
-  }),
-  (req, res) => {
-    res.redirect(Config.redirect.url);
-  }
+    failureRedirect: Config.redirect.error,
+    successRedirect: Config.redirect.seccess,
+  })
 );
 
-router.get("/seccess", ctrlWrapper(auth.authSuccess));
+const idLoggedIn = (req, res, next) => {
+  console.log(req);
+  if (req.user) {
+    next();
+  } else {
+    res.json({ message: createError(401) });
+  }
+};
+
+router.get("/seccess", idLoggedIn, ctrlWrapper(auth.authSuccess));
 
 router.get("/error", function (req, res, next) {
   res.json({ message: "👿" });
