@@ -34,16 +34,15 @@ router.get(
   })
 );
 
-const idLoggedIn = (req, res, next) => {
-  console.log(req);
+const isLoggedIn = (req, res, next) => {
   if (req.user) {
     next();
   } else {
-    res.json({ message: createError(401) });
+    res.json({ message: "Not Authorize" });
   }
 };
 
-router.get("/seccess", idLoggedIn, ctrlWrapper(auth.authSuccess));
+router.get("/seccess", isLoggedIn, ctrlWrapper(auth.authSuccess));
 
 router.get("/error", function (req, res, next) {
   res.json({ message: "👿" });

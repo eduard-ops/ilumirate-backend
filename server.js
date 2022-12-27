@@ -2,7 +2,7 @@ const app = require("./app");
 
 const sequelize = require("./db");
 
-require("./models");
+// require("./models");
 
 const PORT = process.env.PORT || 7000;
 
