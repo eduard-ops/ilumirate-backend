@@ -1,8 +1,13 @@
-const { checkUser, signupUser, setTokenUser } = require("../../services/auth");
+const {
+  checkUser,
+  signupUser,
+  setTokenUser,
+  checkUserById,
+} = require("../../services/auth");
 
 const { generateToken } = require("../../helpers");
 
-const authSuccess = async (req, res) => {
+const authSuccess = async (req, res, next) => {
   if (req.session?.passport?.user) {
     const userObj = {};
 
@@ -13,22 +18,34 @@ const authSuccess = async (req, res) => {
     const { email } = userObj;
     const user = await checkUser(email);
 
-    if (user) {
-      const token = generateToken(user.dataValues.id);
-      await setTokenUser(user.dataValues.id, token);
-      res.json({
-        message: "User already authenticate",
-        data: { ...userObj, token },
-      });
+    if (!user) {
+      const addUser = await signupUser(email);
+      const token = generateToken(addUser.dataValues.id);
+      await setTokenUser(addUser.dataValues.id, token);
+      res.json({ message: "Wellcom", data: { ...userObj, token } });
       return;
     }
 
-    const addUser = await signupUser(email);
-    const token = generateToken(addUser.dataValues.id);
-    await setTokenUser(addUser.dataValues.id, token);
+    const data = await checkUserById(user.dataValues.id);
 
-    res.json({ message: "Wellcom", data: { ...userObj, token } });
+    if (!data.token) {
+      const newToken = generateToken(data.id);
+      await setTokenUser(data.id, newToken);
+      res.json({
+        message: "Already authenticated , New Token",
+        data: { ...userObj, token: newToken },
+      });
+      return;
+    }
+    res.json({
+      message: "Your token",
+      data: { ...userObj, token: data.token },
+    });
   }
 };
 
 module.exports = authSuccess;
+
+// user.dataValues?.token
+//   ? token
+//   : (token = generateToken(user.dataValues.id));

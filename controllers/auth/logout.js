@@ -7,8 +7,8 @@ const logout = async (req, res, next) => {
     if (err) {
       return next(err);
     }
-    res.redirect("/home");
-    // res.status(204).json();
+
+    res.status(204).json();
   });
 };
 
