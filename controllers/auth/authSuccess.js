@@ -45,7 +45,3 @@ const authSuccess = async (req, res, next) => {
 };
 
 module.exports = authSuccess;
-
-// user.dataValues?.token
-//   ? token
-//   : (token = generateToken(user.dataValues.id));

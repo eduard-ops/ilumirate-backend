@@ -39,10 +39,6 @@ app.use("/api", router);
 //   })
 // );
 
-app.get("/home", (req, res) => {
-  res.send("Home");
-});
-
 app.use((req, res) => {
   res.status(404).json({ message: "Not found" });
 });

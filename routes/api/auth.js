@@ -6,8 +6,6 @@ const passport = require("../../lib/passport");
 
 const Config = require("../../lib/config");
 
-const { createError } = require("../../helpers");
-
 const {
   ctrlWrapper,
   validation,
@@ -26,6 +24,8 @@ router.get("/logout", authMiddleware, ctrlWrapper(auth.logout));
 
 router.get("/google", passport.authenticate("google"));
 
+router.get("/facebook", passport.authenticate("facebook"));
+
 router.get(
   "/google/callback",
   passport.authenticate("google", {
@@ -34,18 +34,16 @@ router.get(
   })
 );
 
-const isLoggedIn = (req, res, next) => {
-  if (req.user) {
-    next();
-  } else {
-    res.json({ message: "Not Authorize" });
-  }
-};
+router.get(
+  "/facebook/callback",
+  passport.authenticate("facebook", {
+    successRedirect: Config.redirect.seccess,
+    failureRedirect: Config.redirect.error,
+  })
+);
 
-router.get("/seccess", isLoggedIn, ctrlWrapper(auth.authSuccess));
+router.get("/seccess", ctrlWrapper(auth.authSuccess));
 
-router.get("/error", function (req, res, next) {
-  res.json({ message: "👿" });
-});
+router.get("/error", (req, res, next) => res.json({ message: "👿" }));
 
 module.exports = router;
