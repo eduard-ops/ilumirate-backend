@@ -10,7 +10,9 @@ const cors = require("cors");
 
 const router = require("./routes/api");
 
-const Config = require("./lib/config");
+require("./models");
+
+// const Config = require("./lib/config");
 
 const app = express();
 
@@ -18,7 +20,26 @@ const passport = require("./lib/passport");
 
 const formatsLogger = app.get("env") === "development" ? "dev" : "short";
 
-app.use(session(Config.session));
+const SequelizeStore = require("connect-session-sequelize")(session.Store);
+
+const sequelize = require("./db");
+
+app.use(
+  session({
+    secret: "fdsfsd3423423",
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+      maxAge: 30 * 24 * 60 * 60 * 1000, // 1 month
+    },
+    store: new SequelizeStore({
+      db: sequelize,
+      table: "Session",
+    }),
+  })
+);
+
+app.get("/home", (req, res) => res.send("HOME"));
 
 app.use(passport.initialize());
 app.use(passport.session());
