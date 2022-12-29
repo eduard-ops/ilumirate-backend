@@ -1,5 +1,7 @@
 require("dotenv").config();
 
+require("./models");
+
 const express = require("express");
 
 const session = require("express-session");
@@ -8,34 +10,22 @@ const logger = require("morgan");
 
 const cors = require("cors");
 
-const router = require("./routes/api");
-
-require("./models");
-
-// const Config = require("./lib/config");
-
 const app = express();
+
+const router = require("./routes/api");
 
 const passport = require("./lib/passport");
 
 const formatsLogger = app.get("env") === "development" ? "dev" : "short";
 
-const SequelizeStore = require("connect-session-sequelize")(session.Store);
+const sessionStore = require("./lib/sessionStore");
 
-const sequelize = require("./db");
+const Config = require("./lib/config");
 
 app.use(
   session({
-    secret: "fdsfsd3423423",
-    resave: false,
-    saveUninitialized: false,
-    cookie: {
-      maxAge: 30 * 24 * 60 * 60 * 1000, // 1 month
-    },
-    store: new SequelizeStore({
-      db: sequelize,
-      table: "Session",
-    }),
+    ...Config.session,
+    store: sessionStore,
   })
 );
 
@@ -49,16 +39,6 @@ app.use(cors());
 app.use(express.json());
 
 app.use("/api", router);
-
-// app.use(
-//   session({
-//     secret: Config.session.secret,
-//     store: myStore,
-//     saveUninitialized: false,
-//     resave: Config.session.resave,
-//     proxy: Config.session.proxy,
-//   })
-// );
 
 app.use((req, res) => {
   res.status(404).json({ message: "Not found" });

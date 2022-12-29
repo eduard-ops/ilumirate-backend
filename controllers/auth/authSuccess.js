@@ -8,7 +8,6 @@ const {
 const { generateToken } = require("../../helpers");
 
 const authSuccess = async (req, res, next) => {
-  console.log(req);
   if (req.session?.passport?.user) {
     const userObj = {};
 
