@@ -1,9 +1,4 @@
-const {
-  checkUser,
-  signupUser,
-  setTokenUser,
-  checkUserById,
-} = require("../../services/auth");
+const { checkUser, signupUser, setTokenUser } = require("../../services/auth");
 
 const { generateToken } = require("../../helpers");
 
@@ -19,18 +14,19 @@ const authSuccess = async (req, res, next) => {
     const user = await checkUser(email);
 
     if (!user) {
-      const addUser = await signupUser(email);
-      const token = generateToken(addUser.dataValues.id);
-      await setTokenUser(addUser.dataValues.id, token);
+      const {
+        dataValues: { id },
+      } = await signupUser(email);
+      const token = generateToken(id);
+      await setTokenUser(id, token);
       res.json({ message: "Wellcom", data: { ...userObj, token } });
       return;
     }
 
-    const data = await checkUserById(user.dataValues.id);
-
-    if (!data.token) {
-      const newToken = generateToken(data.id);
-      await setTokenUser(data.id, newToken);
+    const { id, token } = user.dataValues;
+    if (!token) {
+      const newToken = generateToken(id);
+      await setTokenUser(id, newToken);
       res.json({
         message: "Already authenticated , New Token",
         data: { ...userObj, token: newToken },
@@ -39,7 +35,7 @@ const authSuccess = async (req, res, next) => {
     }
     res.json({
       message: "Your token",
-      data: { ...userObj, token: data.token },
+      data: { ...userObj, token },
     });
   }
 };
