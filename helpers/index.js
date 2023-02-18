@@ -2,10 +2,10 @@ const createError = require("./createError");
 
 const tryCatchWrapper = require("./tryCatchWrapper");
 
-const generateToken = require("./generateToken");
+const generateTokens = require("./generateTokens");
 
 module.exports = {
   createError,
   tryCatchWrapper,
-  generateToken,
+  generateTokens,
 };

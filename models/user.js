@@ -7,8 +7,12 @@ const Joi = require("joi");
 const User = sequelize.define("user", {
   id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
   email: { type: DataTypes.STRING, unique: true },
-  password: { type: DataTypes.STRING },
-  token: { type: DataTypes.STRING, defaultValue: null },
+  password: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  accessToken: { type: DataTypes.STRING, defaultValue: null },
+  refreshToken: { type: DataTypes.STRING, defaultValue: null },
 });
 
 const joiUserSchema = Joi.object({
@@ -16,7 +20,12 @@ const joiUserSchema = Joi.object({
   password: Joi.string().trim().required(),
 });
 
+const joiRefreshSchema = Joi.object({
+  refreshToken: Joi.string().required(),
+});
+
 module.exports = {
   User,
   joiUserSchema,
+  joiRefreshSchema,
 };

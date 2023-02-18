@@ -4,15 +4,13 @@ const router = express.Router();
 
 const passport = require("../../lib/passport");
 
-const Config = require("../../lib/config");
-
 const {
   ctrlWrapper,
   validation,
   authMiddleware,
 } = require("../../middlewares");
 
-const { joiUserSchema } = require("../../models/user");
+const { joiUserSchema, joiRefreshSchema } = require("../../models/user");
 
 const { auth } = require("../../controllers");
 
@@ -20,7 +18,11 @@ router.post("/signup", validation(joiUserSchema), ctrlWrapper(auth.signup));
 
 router.post("/login", validation(joiUserSchema), ctrlWrapper(auth.login));
 
-router.get("/logout", authMiddleware, ctrlWrapper(auth.logout));
+router.post(
+  "/refresh",
+  validation(joiRefreshSchema),
+  ctrlWrapper(auth.refresh)
+);
 
 router.get("/google", passport.authenticate("google"));
 
@@ -28,22 +30,16 @@ router.get("/facebook", passport.authenticate("facebook"));
 
 router.get(
   "/google/callback",
-  passport.authenticate("google", {
-    failureRedirect: Config.redirect.error,
-    successRedirect: Config.redirect.seccess,
-  })
+  passport.authenticate("google", { session: false }),
+  ctrlWrapper(auth.userAuthentication)
 );
 
 router.get(
   "/facebook/callback",
-  passport.authenticate("facebook", {
-    successRedirect: Config.redirect.seccess,
-    failureRedirect: Config.redirect.error,
-  })
+  passport.authenticate("facebook", { session: false }),
+  ctrlWrapper(auth.userAuthentication)
 );
 
-router.get("/seccess", ctrlWrapper(auth.authSuccess));
-
-router.get("/error", (req, res, next) => res.json({ message: "👿" }));
+router.get("/logout", authMiddleware, ctrlWrapper(auth.logout));
 
 module.exports = router;

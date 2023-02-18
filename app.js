@@ -4,8 +4,6 @@ require("./models");
 
 const express = require("express");
 
-const session = require("express-session");
-
 const logger = require("morgan");
 
 const cors = require("cors");
@@ -14,25 +12,7 @@ const app = express();
 
 const router = require("./routes/api");
 
-const passport = require("./lib/passport");
-
 const formatsLogger = app.get("env") === "development" ? "dev" : "short";
-
-const sessionStore = require("./lib/sessionStore");
-
-const Config = require("./lib/config");
-
-app.use(
-  session({
-    ...Config.session,
-    store: sessionStore,
-  })
-);
-
-app.get("/home", (req, res) => res.send("HOME"));
-
-app.use(passport.initialize());
-app.use(passport.session());
 
 app.use(logger(formatsLogger));
 app.use(cors());

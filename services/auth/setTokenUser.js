@@ -2,9 +2,13 @@ const { User } = require("../../models/user");
 
 const { tryCatchWrapper } = require("../../helpers");
 
-const setTokenUser = async (userId, userToken = null) => {
+const setTokenUser = async (
+  userId,
+  accessToken = null,
+  refreshToken = null
+) => {
   await tryCatchWrapper(
-    User.update({ token: userToken }, { where: { id: userId } })
+    User.update({ accessToken, refreshToken }, { where: { id: userId } })
   );
 };
 

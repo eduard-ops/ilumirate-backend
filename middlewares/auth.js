@@ -4,18 +4,18 @@ const { checkUserById } = require("../services/auth");
 
 const jwt = require("jsonwebtoken");
 
-const { SECRET_KEY } = process.env;
+const { ACCESS_SECRET_KEY } = process.env;
 
-const auth = async (req, res, next) => {
+const auth = async (req, _, next) => {
   const { authorization = "" } = req.headers;
   const [bearer, token] = authorization.split(" ");
   try {
     if (bearer !== "Bearer") {
       throw createError(401);
     }
-    const { id } = jwt.verify(token, SECRET_KEY);
+    const { id } = jwt.verify(token, ACCESS_SECRET_KEY);
     const user = await checkUserById(id);
-    if (!user || !user.token) {
+    if (!user || !user.accessToken) {
       throw createError(401);
     }
     req.user = user;
