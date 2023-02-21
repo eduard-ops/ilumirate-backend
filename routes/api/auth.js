@@ -10,6 +10,8 @@ const {
   authMiddleware,
 } = require("../../middlewares");
 
+const { parceCookie } = require("../../helpers");
+
 const { joiUserSchema, joiRefreshSchema } = require("../../models/user");
 
 const { auth } = require("../../controllers");
@@ -41,5 +43,13 @@ router.get(
 );
 
 router.get("/logout", authMiddleware, ctrlWrapper(auth.logout));
+
+router.get("/home", (req, res) => {
+  const data = req.headers.cookie;
+
+  const { email } = parceCookie(data);
+
+  res.send(email);
+});
 
 module.exports = router;
