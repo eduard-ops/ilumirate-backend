@@ -1,7 +1,6 @@
 const tryCatchWrapper = async (fn) => {
   try {
-    const data = await fn;
-    return data;
+    return await fn;
   } catch (error) {
     console.log(error.message);
   }

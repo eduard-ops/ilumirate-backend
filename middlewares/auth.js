@@ -14,7 +14,9 @@ const auth = async (req, _, next) => {
       throw createError(401);
     }
     const { id } = jwt.verify(token, ACCESS_SECRET_KEY);
+
     const user = await checkUserById(id);
+
     if (!user || !user.accessToken) {
       throw createError(401);
     }
