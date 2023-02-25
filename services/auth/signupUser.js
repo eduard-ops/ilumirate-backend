@@ -7,8 +7,6 @@ const signup = async (email, hashPassword = null) => {
     User.create({ email, password: hashPassword })
   );
 
-  console.log(user);
-
   return user;
 };
 

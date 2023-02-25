@@ -2,7 +2,7 @@ const express = require("express");
 
 const router = express.Router();
 
-const passport = require("../../lib/passport");
+const passport = require("../../lib/passport/passport");
 
 const {
   ctrlWrapper,

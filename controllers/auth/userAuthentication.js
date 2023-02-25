@@ -12,7 +12,7 @@ const userAuthentication = async (req, res, next) => {
   res
     .cookie("email", req.user.dataValues.email)
     .cookie("tokens", { accessToken, refreshToken })
-    .redirect(`${FRONT_END_URL}/home`);
+    .redirect(`${FRONT_END_URL}/`);
 };
 
 module.exports = userAuthentication;
